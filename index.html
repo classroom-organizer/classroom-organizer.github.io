@@ -1,41 +1,309 @@
-<!DOCTYPE html>
 <html>
 <head>
-	<title>Classroom Organizer</title>
-	
-	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-	<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-</head
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue_grey-teal.min.css">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-red.min.css">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue-yellow.min.css">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.brown-green.min.css">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.pink-light_blue.min.css">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="classroom-organizer.css">
+  <!-- <link rel="stylesheet" type="text/css" href="darkTheme.css" id="currentTheme"> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<script type="text/javascript" src="classroom-organizer.js"></script>
 <body>
 
-<!-- Wide card with share menu button -->
-<style>
-.demo-card-wide.mdl-card {
-  width: 512px;
-  margin: auto;
-}
-.demo-card-wide > .mdl-card__title {
-  color: #fff;
-  height: 176px;
-  background: slategrey;
-}
-.demo-card-wide > .mdl-card__menu {
-  color: #fff;
-}
-.mdl-card__supporting-text {
-	background: turquoise;
-}
-</style>
 
-<div class="demo-card-wide mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Coming Soon...</h2>
+  <!-- <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header"> -->
+  <div class="mdl-layout mdl-js-layout">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title">Classroom Organizer</span>
+
+      <span class="save-load-menu">
+      <button id="menu-lower-right"
+              class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">more_vert</i>
+      </button>
+
+      <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+          for="menu-lower-right">
+        <li class="mdl-menu__item" onclick="save()">Save</li>
+        <li class="mdl-menu__item" onclick="saveAs()">Save As</li>
+        <li class="mdl-menu__item" onclick="load()">Load</li>
+      </ul>
+    </span>
+    <!-- <label class="spacer" style="{float: right;}"></label> -->
+    <label id='sessionName'>Untitled Session*</label>
+    </div>
+
+    <!-- Tabs -->
+    <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+      <a href="#scroll-tab-1" class="mdl-layout__tab is-active">Seating Chart</a>
+      <a href="#scroll-tab-2" class="mdl-layout__tab">Carpet Chart</a>
+      <!-- <a href="#scroll-tab-3" class="mdl-layout__tab">Notes</a>
+      <a href="#scroll-tab-4" class="mdl-layout__tab">To Do List</a> -->
+      <a href="#scroll-tab-5" class="mdl-layout__tab">Help</a>
+      <a href="#scroll-tab-6" class="mdl-layout__tab">Settings</a>
+      
+    </div>
+
+    <!-- <div class="save-load-menu"> -->
+
+    <!-- </div> -->
+
+
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title"><b>Class List</b></span>
+    <!-- <div id="ClassListSidebar" class="sidebar-nav" style="display:none"> -->
+      <!-- <button class="classListButton" onclick="uploadList()">Load List</button> 
+      <br>
+      <button class="classListButton" onclick="saveList()">Save List</button>
+      <br> -->
+      <!-- <p>Type student names into the below text fields and use the "Add Student" button or upload a .csv/.xls file to add students to your list.</p>
+      <p>When you are finished updating your list, click the "Update List" button to apply your changes.</p> -->
+     <!--  <label class="classListTitle">Class List</label>
+      <hr> -->
+      <!-- <br><br> -->
+      <div class="class-list">
+        <div>
+          <button class="classListButton mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--accent" onclick="addStudent()"><i class="material-icons">person_add</i></button>
+        </div>
+        <br>
+        <label style="{margin-left: 25px;}">Name</label>
+        <label class="spacer"> </label>
+        <label>Gender: M | F</label>
+        
+        <!-- <button onclick="updateList()">Update List</button> -->
+        
+        <!-- <p><b>Name</b></p> -->
+        <table id="classListTable"><!-- style="width:100%">-->
+        </table>
+      </div>
+    <!-- <hr> -->
   </div>
-  <div class="mdl-card__supporting-text">
-    Classroom Organizer is a web application designed to help teachers envision and manage their classroom. Teaching can be difficult... we'll try to make it a little easer!
-  </div>
+  <main class="mdl-layout__content">
+    <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
+      <div class="page-content">
+        <div id="SeatingChart" class="tabcontent">
+
+          <!-- Chart Controls -->
+          <label><b>Manage Chart: </b></label>
+          <button class="chartBtn mdl-button mdl-js-button mdl-button--raised" onclick="randomizeSeatingChart()">Randomize Seating</button>
+          <button class="chartBtn mdl-button mdl-js-button mdl-button--raised" onclick="resetChart('classLayout')">Reset Chart</button>
+          <button class="chartBtn mdl-button mdl-js-button mdl-button--raised" onclick="clearTextFromChart('classLayout')">Clear Names</button>
+          <label class="spacer"></label>
+          <label><b>Rows(<label id='classRows'>13</label></label><label>): </b></label>
+          <button class="row-col-btn mdl-button mdl-js-button mdl-button--icon" onclick="addRow('classLayout')"><i class="material-icons">add_circle_outline</i></button>
+          <button class="row-col-btn mdl-button mdl-js-button mdl-button--icon" onclick="deleteRow('classLayout')"><i class="material-icons">remove_circle_outline</i></button>
+          <label class="spacer"></label>
+          <label><b>Columns(<label id='classCols'>13</label></label><label>): </b></label>
+          <button class="row-col-btn mdl-button mdl-js-button mdl-button--icon" onclick="addColumn('classLayout')"><i class="material-icons">add_circle_outline</i></button>
+          <button class="row-col-btn mdl-button mdl-js-button mdl-button--icon" onclick="deleteColumn('classLayout')"><i class="material-icons">remove_circle_outline</i></button>
+          
+          <br><br>
+          <label><b>Add Seats: </b></label>
+          <button class="seatColorBtn mdl-button mdl-js-button mdl-button--raised" id="red" onclick="changeSeatColor(this, 'red')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised" id="orange" onclick="changeSeatColor(this, 'orange')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised" id="gold" onclick="changeSeatColor(this, 'gold')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised" id="lawngreen" onclick="changeSeatColor(this, 'lawngreen')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised" id="deepskyblue" onclick="changeSeatColor(this, 'deepskyblue')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised" id="turquoise" onclick="changeSeatColor(this, 'turquoise')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised" id="mediumpurple" onclick="changeSeatColor(this, 'mediumpurple')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised" id="violet" onclick="changeSeatColor(this, 'violet')"></button>
+          <label class="spacer"></label>
+          <label><b>Remove: </b></label>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised mdl" id="none" onclick="changeSeatColor(this, 'none')"></button>
+          <label class="spacer"></label>
+          <label><b>Add Furniture: </b></label>
+          <button class="seatColorBtn furniture mdl-button mdl-js-button mdl-button--raised" id="black" onclick="changeSeatColor(this, 'black')"></button>
+          <br><br>
+
+          <!-- Chart Mode -->
+          <label><b>Mode: </b></label>
+          <!-- <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" disabled="true" id="layoutModeBtn" onclick="seatingChartMode('layout')">Manage Layout</button> -->
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" id="layoutModeBtn" onclick="seatingChartMode('layout')">Manage Layout</button>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" id="studentsModeBtn" onclick="seatingChartMode('students')">Manage Students</button>
+          <label class="spacer"></label>
+          <label><b>View: </b></label>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" id="tableViewBtn" onclick="toggleView('classLayout', 'tableView')">Tables</button>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" id="genderViewBtn" onclick="toggleView('classLayout', 'genderView')">Gender</button>
+          <label class="spacer"></label>
+          <b><label id="seatsNeeded">Seats Left to Add: 0</label></b>
+
+          
+
+          <hr>
+          <!-- Chart -->
+          <div class="chart chart-container">
+            <!-- <div class="chartControls"> -->
+
+            <!-- </div> -->
+            <table id="classLayout"></table>
+            <!-- <script>createLayout("classLayout");</script> -->
+            <!-- <h2 class="frontLabel">Front</h2> -->
+          </div>
+          <!-- <p id="list">No Students</p> -->
+          <!-- </div> -->
+        </div>
+      </div>
+    </section>
+    <section class="mdl-layout__tab-panel" id="scroll-tab-2">
+      <div class="page-content">
+        
+        <div id="CarpetChart" class="tabcontent">
+          
+          <!-- Chart Controls -->
+          <label><b>Manage Chart: </b></label>
+          <button class="chartBtn mdl-button mdl-js-button mdl-button--raised" onclick="randomizeCarpetChart()">Randomize Seating</button>
+          <button class="chartBtn mdl-button mdl-js-button mdl-button--raised" onclick="resetChart('carpetLayout')">Reset Chart</button>
+          <button class="chartBtn mdl-button mdl-js-button mdl-button--raised" onclick="clearTextFromChart('carpetLayout')">Clear Names</button>
+          <label class="spacer"></label>
+          <label><b>Rows(<label id='carpetRows'>13</label></label><label>): </b></label>
+          <button class="row-col-btn mdl-button mdl-js-button mdl-button--icon" onclick="addRow('carpetLayout')"><i class="material-icons">add_circle_outline</i></button>
+          <button class="row-col-btn mdl-button mdl-js-button mdl-button--icon" onclick="deleteRow('carpetLayout')"><i class="material-icons">remove_circle_outline</i></button>
+          <label class="spacer"></label>
+          <label><b>Columns(<label id='carpetCols'>13</label></label><label>): </b></label>
+          <button class="row-col-btn mdl-button mdl-js-button mdl-button--icon" onclick="addColumn('carpetLayout')"><i class="material-icons">add_circle_outline</i></button>
+          <button class="row-col-btn mdl-button mdl-js-button mdl-button--icon" onclick="deleteColumn('carpetLayout')"><i class="material-icons">remove_circle_outline</i></button>
+
+          <!-- <input type="radio" name="carpetView" value="Tables">
+          <input type="radio" name="carpetView" value="Gender"> -->
+          <br><br>
+          <label><b>Add Seats: </b></label>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised red" id="redCarpet" onclick="changeCarpetSeatColor(this, 'red')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised orange" id="orangeCarpet" onclick="changeCarpetSeatColor(this, 'orange')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised Gold" id="goldCarpet" onclick="changeCarpetSeatColor(this, 'gold')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised LawnGreen" id="lawngreenCarpet" onclick="changeCarpetSeatColor(this, 'lawngreen')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised DeepSkyBlue" id="deepskyblueCarpet" onclick="changeCarpetSeatColor(this, 'deepskyblue')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised Turquoise" id="turquoiseCarpet" onclick="changeCarpetSeatColor(this, 'turquoise')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised MediumPurple" id="mediumpurpleCarpet" onclick="changeCarpetSeatColor(this, 'mediumpurple')"></button>
+          <button class="seatColorBtn  mdl-button mdl-js-button mdl-button--raised violet" id="violetCarpet" onclick="changeCarpetSeatColor(this, 'violet')"></button>
+
+          <label class="spacer"></label>
+          <label><b>Remove: </b></label>
+          <button class="seatColorBtn mdl-button mdl-js-button mdl-button--raised none" id="noneCarpet" onclick="changeCarpetSeatColor(this, 'none')"></button>
+          
+          <label class="spacer"></label>
+          <label><b>Add Furniture: </b></label>
+          <button class="seatColorBtn mdl-button mdl-js-button mdl-button--raised furniture" id="blackCarpet" onclick="changeCarpetSeatColor(this, 'black')"></button>
+          <br><br>
+
+
+          <label><b>Mode: </b></label>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" id="carpetLayoutModeBtn" onclick="carpetChartMode('carpetLayout')">Manage Layout</button>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" id="carpetStudentsModeBtn" onclick="carpetChartMode('carpetStudents')">Manage Students</button>
+          <label class="spacer"></label>
+          <label><b>View: </b></label>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" id="carpetTableViewBtn" onclick="toggleView('carpetLayout', 'tableView')">Tables</button>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" id="carpetGenderViewBtn" onclick="toggleView('carpetLayout', 'genderView')">Gender</button>
+          <label class="spacer"></label>
+          <b><label id="carpetSpotsNeeded">Carpet Spots Left to Add: 0</label></b>
+
+          <hr>
+          <!-- Chart -->
+          <div class="chart-container">
+            <table id="carpetLayout"></table>
+            <!-- <script>createLayout("carpetLayout");</script> -->
+            <!-- <h2 class="frontLabel">Front</h2> -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+   <!--  <section class="mdl-layout__tab-panel" id="scroll-tab-3">
+      <div class="page-content">Content</div>
+    </section>
+    <section class="mdl-layout__tab-panel" id="scroll-tab-4">
+      <div class="page-content">Content</div>
+    </section> -->
+    <section class="mdl-layout__tab-panel" id="scroll-tab-5">
+      <div class="page-content">
+        
+<div id="Help" class="tabcontent">
+      <h3>
+        <h3>Thank you for using Classroom Organizer!</h3>
+        <p>Use the following information to get the most out of this application.</p>
+
+        <p><b>General Use & Information<b></p>
+
+        <p>Google Chrome is the recommended browser when using this application. However, other browsers may be used.</p>
+
+        <p>Get started:</p>
+        <ol>
+          <li>Add students in the class list sidebar menu</li>
+          <li>Create your seating chart by adding one or more of the colored seats</li>
+          <li>Randomize the seating arrangement</li>
+          <li>If necessary, swap students using the 'Manage Students' mode</li>
+          <li>Save your session</li>
+        </ol>
+
+        <p>Note: This application saves sessions to your computer and is specific to the browser you are using. To load a session, you must be using the same browser on the same computer which the session was saved to.</p>
+
+        <p><b>Tips</b></p>
+        <ul>
+          <li>Create a template. If you are going to use a similar layout for multiple seating charts, create the chart without adding the students. This way, you can easily reuse the same layout for multiple classes.</li>
+          <li>If you do not need the carpet seating chart, you can use it as another normal seating chart.</li>
+        </ul>
+
+        <p><b>About this Application</b><br>As the husband of a Kindergarten teacher, I have seen how much work and preparation goes into teaching. Although creating a seating chart may not be the most tedious part of this preparation, I hope that this application will enable you to easily envision your class layout and create a seating chart that will optimize your students learning.</p>
+
+        <p><b>About the Author</b><br>Hi my name is Dallin. I am currently a junior in college, studying Computer Science. Having created a similar program in Excel for my wife to use in her teaching, this application was developed with the purpose of improving upon the original program as well as an opportunity for me to learn as a developer. </p>
+
+        <p><b>Getting Help</b><br>If you have any questions, find any errors when using this program, or would like to provide feedback, you are encouraged to contact me at <a style="color:red;" href="mailto:classroom.organizer.app@gmail.com?subject=Feedback">classroom.organizer.app@gmail.com</a>.</p>
+
+        <hr>
+        <p>&copy; VanWare Solutions, 2017. All rights reserved. Version <label id="versionLabel"></label></p>
+      </div>
+
+      </div>
+    </section>
+    <section class="mdl-layout__tab-panel" id="scroll-tab-6">
+      <div class="page-content">
+        
+        <div id="Settings" class="tabcontent">
+          <h3><b>SeatingChartUtil Settings</b></h3>
+          <label><b>Manage Sessions: </b></label>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" onclick="viewSessions()">View Saved Sessions</button>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" onclick="deleteSession()">Delete Existing Session</button>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" onclick="deleteAllSessions()">Delete All Sessions</button>
+          <br><br>
+
+          <label><b>Theme: </b></label>
+
+          <br><label class="spacer"></label>
+          <input type="radio" id="theme0" name="theme" onclick="changeTheme(0, true)">
+          <label>Grey/Cyan</label>
+
+          <br><label class="spacer"></label>
+          <input type="radio" id="theme1" name="theme" onclick="changeTheme(1, true)">
+          <label>Blue/Red</label>
+
+          <br><label class="spacer"></label>
+          <input type="radio" id="theme2" name="theme" onclick="changeTheme(2, true)">
+          <label>Blue/Yellow</label>
+
+          <br><label class="spacer"></label>
+          <input type="radio" id="theme3" name="theme" onclick="changeTheme(3, true)">
+          <label>Brown/Green</label>
+
+          <br><label class="spacer"></label>
+          <input type="radio" id="theme4" name="theme" onclick="changeTheme(4, true)">
+          <label>Pink/Light Blue</label>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
 </div>
+    
 
 </body>
 </html>
