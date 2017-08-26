@@ -570,7 +570,10 @@ function resetChart(tableId) {
 function clearTextFromChart(tableId) {
     if (confirm("Are you sure you wish to remove all names from the chart?")) {
         resetTable(tableId, false);
-		if ((tableId === "classLayout" && classView === "genderView") || (tableId === "carpetLayout" && carpetView === "genderView")) {			colorSeatsByGender(tableId);		}        unsavedChanges = true;
+		if ((tableId === "classLayout" && classView === "genderView") || (tableId === "carpetLayout" && carpetView === "genderView")) {
+			colorSeatsByGender(tableId);
+		}
+        unsavedChanges = true;
         addAsterisk();
     }
 }
@@ -596,10 +599,14 @@ function resetTable(tableId, clearSeats) {
     for (var r = 0; row = table.rows[r]; r++) {
         for (var c = 0; cell = row.cells[c]; c++) {
             cell = cell.childNodes[0];
-            if (cell.style.color !== "white") {				cell.innerText = "";			}            if (clearSeats) {
+            if (cell.style.color !== "white") {
+				cell.innerText = "";
+			}
+            if (clearSeats) {
                 cell.isSeat = false;
                 cell.style.backgroundColor = noColor;
-				cell.innerText = "";            }
+				cell.innerText = "";
+            }
         }
     }
 }
@@ -3070,4 +3077,120 @@ function changeTheme(themeIndex, userChange) {
 
     // document.body.appendChild(sheet);
 
+}
+
+// ------------------- Import/Export Sessions ----------------------
+function exportSession() {
+    if (localStorage.getItem("seatingChartSessions") === null) {
+        alert("Sorry, you don't have any saved sessions to be exported.");
+        return;
+    }
+
+    var sessionName = prompt("Which session would you like to export?\n\n" + printSessions());
+
+    if (sessionName === null) {
+        return;
+    }
+    else if (sessionName === currentSession && unsavedChanges) {
+        if (!confirm("You are exporting the current session but have not saved all your changes. You may want to save your changes before continuing. Continue with export?")) {
+            return;
+        }
+    }
+
+    var sessions = JSON.parse(localStorage.getItem("seatingChartSessions"));
+    var sessionJson = "";
+  if (sessions.indexOf(sessionName) === -1) { // Add the session name only if it is new. Also update list in localStorage
+    alert("Sorry, that session cannot be found.");
+  }
+  else {
+    session = JSON.parse(localStorage.getItem(sessionName + salt));
+    session.sessionName = sessionName;
+    sessionJson += JSON.stringify(session);
+    alert("Export succeded. Your file will now be downloaded. Please do not alter the contents of the exported file in anyway, as this will corrupt the data and make it unable to be imported.");
+    createFile(sessionName, sessionJson);
+  }
+  
+}
+
+function exportAll() {
+    var sessionNames = getSessionNames();
+    if (sessionNames === null) {
+        alert("Sorry, you don't have any saved sessions to be exported.");
+        return;
+    }
+
+    var allSessions = "";
+    for (var i = 0; i < sessionNames.length; i++) {
+        var currSession = JSON.parse(localStorage.getItem(sessionNames[i] + salt));
+        currSession.sessionName = sessionNames[i];
+        allSessions += JSON.stringify(currSession);
+        if (i + 1 !== sessionNames.length) {
+            allSessions += "|";
+        }
+    }
+    alert("Export succeded. Your file will now be downloaded. Please do not alter the contents of the exported file in anyway, as this will corrupt the data and make it unable to be imported.");
+    createFile("Classroom-Organizer", allSessions);
+    
+}
+
+function createFile(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+function importSessions(sessionJson) {
+    var sessions = sessionJson.split("|");
+    for (var i = 0; i < sessions.length; i++) {
+        var currSession = JSON.parse(sessions[i]);
+        if (!validateSessionJson(currSession)) {
+            alert("Sorry, this file cannot be imported.");
+            return;
+        }
+
+        var sessionNames = getSessionNames();
+        if (sessionNames.indexOf(currSession.sessionName) !== -1) {
+            var sessionName = currSession.sessionName;
+            currSession.sessionName = prompt("The session '" + currSession.sessionName + "' already exists. Give it a new name: ");
+            if (currSession.sessionName === "" || currSession.sessionName === null) {
+                currSession.sessionName = sessionName += "(2)";
+            }
+        }
+        sessionNames.push(currSession.sessionName);
+        localStorage.setItem("seatingChartSessions", JSON.stringify(sessionNames));
+
+        var name = currSession.sessionName;
+        delete currSession.sessionName;
+
+        localStorage.setItem(name + salt, JSON.stringify(currSession));
+        alert("Import succeeded. Your session was saved as '" + name + "'.");
+    }
+    document.getElementById("importFile").value = "";
+}
+
+function validateSessionJson(sessionInfo) {
+    if (sessionInfo.sessionName === null 
+        || sessionInfo.studentInfo === null
+        || sessionInfo.seatingChartInfo === null
+        || sessionInfo.carpetChartInfo === null
+        || sessionInfo.carpetSpotsNeeded  === null 
+        || sessionInfo.seatsNeeded === null
+        || sessionInfo.numRows === null
+        || sessionInfo.numCols === null
+        || sessionInfo.numCarpetRows  === null
+        || sessionInfo.numCarpetCols === null
+        || sessionInfo.version === null
+        || sessionInfo.defaultThemeIndex === null) {
+
+        return false;
+    }
+
+    return true;
 }
