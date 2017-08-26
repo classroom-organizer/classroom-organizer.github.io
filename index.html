@@ -60,21 +60,13 @@
 
   </header>
   <div class="mdl-layout__drawer">
-    <span class="mdl-layout-title"><b>Class List</b></span>
-    <!-- <div id="ClassListSidebar" class="sidebar-nav" style="display:none"> -->
-      <!-- <button class="classListButton" onclick="uploadList()">Load List</button> 
-      <br>
-      <button class="classListButton" onclick="saveList()">Save List</button>
-      <br> -->
-      <!-- <p>Type student names into the below text fields and use the "Add Student" button or upload a .csv/.xls file to add students to your list.</p>
-      <p>When you are finished updating your list, click the "Update List" button to apply your changes.</p> -->
-     <!--  <label class="classListTitle">Class List</label>
-      <hr> -->
-      <!-- <br><br> -->
-      <div class="class-list">
-        <div>
-          <button class="classListButton mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--accent" onclick="addStudent()"><i class="material-icons">person_add</i></button>
-        </div>
+    <span class="mdl-layout-title"><b>Class List</b>
+		<button class="classListButton mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--accent" onclick="addStudent()"><i class="material-icons">person_add</i></button>
+    </span>
+	  <div class="class-list">
+        <!-- <div> -->
+          
+        <!-- </div> -->
         <br>
         <label style="{margin-left: 25px;}">Name</label>
         <label class="spacer"> </label>
@@ -244,19 +236,20 @@
           <li>Save your session</li>
         </ol>
 
-        <p>Note: This application saves sessions to your computer and is specific to the browser you are using. To load a session, you must be using the same browser on the same computer which the session was saved to.</p>
+        <p>Note: This application saves sessions to your computer and is specific to the browser you are using. To load a session, you must be using the same browser on the same computer which the session was saved to. You can export sessions and reimport them into a different browser or computer.</p>
 
         <p><b>Tips</b></p>
         <ul>
           <li>Create a template. If you are going to use a similar layout for multiple seating charts, create the chart without adding the students. This way, you can easily reuse the same layout for multiple classes.</li>
           <li>If you do not need the carpet seating chart, you can use it as another normal seating chart.</li>
+          <li>Export/Import sessions (under the 'Settings' tab) to use your sessions on a different computer. <label style="color:red">If you need to delete your browser history or clear the cache, export your sessions first, as these actions may cause your session information to be deleted.</label></li>
         </ul>
 
         <p><b>About this Application</b><br>As the husband of a Kindergarten teacher, I have seen how much work and preparation goes into teaching. Although creating a seating chart may not be the most tedious part of this preparation, I hope that this application will enable you to easily envision your class layout and create a seating chart that will optimize your students learning.</p>
 
         <p><b>About the Author</b><br>Hi my name is Dallin. I am currently a junior in college, studying Computer Science. Having created a similar program in Excel for my wife to use in her teaching, this application was developed with the purpose of improving upon the original program as well as an opportunity for me to learn as a developer. </p>
 
-        <p><b>Getting Help</b><br>If you have any questions, find any errors when using this program, or would like to provide feedback, you are encouraged to contact me at <a style="color:red;" href="mailto:classroom.organizer.app@gmail.com?subject=Feedback">classroom.organizer.app@gmail.com</a>.</p>
+        <p><b>Getting Help</b><br>If you have any questions, find any errors when using this program, or would like to provide feedback, you are encouraged to contact me at <a style="color:blue;" href="mailto:classroom.organizer.app@gmail.com?subject=Feedback">classroom.organizer.app@gmail.com</a>.</p>
 
         <hr>
         <p>&copy; VanWare Solutions, 2017. All rights reserved. Version <label id="versionLabel"></label></p>
@@ -268,13 +261,42 @@
       <div class="page-content">
         
         <div id="Settings" class="tabcontent">
-          <h3><b>SeatingChartUtil Settings</b></h3>
+          <h3><b>Classroom Organizer Settings</b></h3>
           <label><b>Manage Sessions: </b></label>
           <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" onclick="viewSessions()">View Saved Sessions</button>
           <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" onclick="deleteSession()">Delete Existing Session</button>
+          
           <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" onclick="deleteAllSessions()">Delete All Sessions</button>
           <br><br>
+          <label class="spacer"></label>
+          <label class="spacer"></label>
+          <label><b>Export:</b></label>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" onclick="exportSession()">Export a Session</button>
+          <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" onclick="exportAll()">Export All Sessions</button>
+          <br><br>
+          <label class="spacer"></label>
+          <label class="spacer"></label>
+          <label><b>Import:</b></label>
+          
+          <input type='file' id="importFile" onchange='openFile(event)'><br>
+					<img id='output'>
+					<script>
+					  var openFile = function(event) {
+					    var input = event.target;
 
+					    var reader = new FileReader();
+					    reader.onload = function(){
+					      var text = reader.result;
+					      // alert(text);
+					      importSessions(text);
+					      // var output = document.getElementById('output');
+					      // output.src = dataURL;
+					    };
+					    reader.readAsText(input.files[0]);
+					  };
+					</script>
+
+					<br><br>
           <label><b>Theme: </b></label>
 
           <br><label class="spacer"></label>
@@ -296,6 +318,11 @@
           <br><label class="spacer"></label>
           <input type="radio" id="theme4" name="theme" onclick="changeTheme(4, true)">
           <label>Pink/Light Blue</label>
+
+          <!-- <input id="importFile" type="file"> -->
+          <!-- <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised" onchange="openFile(event)"></button> -->
+
+          <!-- <button class="chartBtn modeBtn mdl-button mdl-js-button mdl-button--raised"><a style="color: black;" href="data:application/octet-stream;charset=utf-16le;base64,//5mAG8AbwAgAGIAYQByAAoA">Export</a></button> -->
         </div>
 
       </div>
