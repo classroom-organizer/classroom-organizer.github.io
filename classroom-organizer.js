@@ -1040,7 +1040,7 @@ function colorSeatsByGender(tableId) {
         for (var c = 0; cell = row.cells[c]; c++) {
             var seat = cell.childNodes[0];
             
-            if (seat.innerHTML !== "" || seat.isSeat) { // We mark all buttons with a student name, not all seats (usually will be the same)
+            if (seat.innerText !== "" || seat.isSeat) { // We mark all buttons with a student name, not all seats (usually will be the same)
                 // seat.setAttribute("previousColor", seat.style.backgroundColor);
                 var gender = getGender(seat.innerHTML);
                 if ( gender === "male") {
